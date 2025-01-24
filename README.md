@@ -2,74 +2,47 @@
 # kris_new
 =======
 # cph-kris README
-
-This is the README for your extension "cph-kris". After writing up a brief description, we recommend including the following sections.
+# Description:
+This VS Code extension allows users to interact with LeetCode problems efficiently by fetching problem statements, generating test cases, and running solutions directly from the VS Code. It supports multiple languages (currently Python and C++ only but can be made to support more languages by doing some changes) and displays results for each test case in the VS Code output section.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+**Fetch Test Cases:** Enter a LeetCode problem URL to fetch the problem statement and corresponding input-output test cases.
+**Run Test Cases:** Automatically run the solution of currently opened file against the fetched test cases. Displays the results (pass/fail) in the output panel.
+**Multiple Language Support:** Detects Python and C++ code, executes solutions, and shows results.
+**Directory Management:** Automatically creates folders to store the problem statement and input-output files(like input_1.txt, output_1.txt...), organizing them by problem.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+**Axios**-- a popular Javascript library for making http requets as I have used Leetcode problem api which requires making http requests
+**Leetcode API**-- https://alfa-leetcode-api.onrender.com/
+**Python** -- for runing python solutions
+**C++ compiler** -- for compiling and running c++ solutions(tested with g++)
 
-## Extension Settings
+## Commands:
+**CPH: Fetch Test Cases:** Fetches the LeetCode problem statement and test cases based on the URL provided.
+**CPH: Run Test Cases:** Executes the solution from the open editor and compares the output with the expected results.
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
+**Usage:**
+# Fetching Test Cases:
+**1.** Press Ctrl+Shift+P (or Cmd+Shift+P on macOS) to open the Command Palette.
+**2.** Type Fetch Test Cases and enter the LeetCode problem URL when prompted. The problem statement and test cases will be saved in a newly created folder.
+# Running Test Cases:
+**1.** Open the solution file you have written.
+**2.** Press Ctrl+Shift+P (or Cmd+Shift+P on macOS) and type Run Test Cases.
+**3.** The solution will be executed against each test case, and the results will be shown in the VS Code output channel.
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+The most important part is the extraction of different types of test cases correctly and properly as this is the part where the possibility of occurence or error is much more. So using proper regex expression is very important. For this I used **POSTMAN**  to see and analyse the api response in different cases to adjust my code and regex expression to extract inputs and outputs correctly. The next important part is their storage and running but it is comparatively less time taking if we have done previous steps correctly. Issue may occur while trying to add more languages and hence I have used only C++ and Python for this extension to keep it simple.
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+First version of my extension.
+Initial release with functionality to fetch LeetCode problem statements and test cases.
+Run and validate Python/C++ solutions directly in the editor.
 
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+Initial release of version 1
 
 ---
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
->>>>>>> 0405f67 (Initial commit: Add VS Code extension code)
