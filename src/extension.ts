@@ -17,7 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         try {
-            // Extract the problem titleSlug from the URL
+            // Extracting the problem titleSlug from the URL
             const titleSlugMatch = url.match(/(?:https:\/\/leetcode\.com\/problems\/)([^/]+)/);
             if (!titleSlugMatch) {
                 vscode.window.showErrorMessage("Invalid LeetCode problem URL.");
@@ -25,7 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
             }
             const titleSlug = titleSlugMatch[1];
 
-            // Make the API call to fetch problem details
+            // Making the API call to fetch problem details using the api provided in the resources
             const apiUrl = `https://alfa-leetcode-api.onrender.com/select?titleSlug=${titleSlug}`;
             const response = await axios.get(apiUrl);
 
@@ -35,26 +35,21 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
 
-            // Use regex to extract input-output pairs (updated for better handling of input formats)
+            // Using regex to extract input-output pairs correctly
             const questionHTML = response.data.question;
-            const inputOutputRegex = /<strong>Input:<\/strong>\s*([\s\S]*?)\s*<br><strong>Output:<\/strong>\s*([\s\S]*?)<br>/gs;
+            const inputOutputRegex = /<strong>Input:<\/strong>\s*(.+?)\n<strong>Output:<\/strong>\s*(.+?)\n/gs;
 
             const inputs: string[] = [];
             const outputs: string[] = [];
             let match;
             while ((match = inputOutputRegex.exec(questionHTML)) !== null) {
-                // Extract inputs (handle array-like inputs or complex objects)
+                // Extracting and cleaning inputs and outputs to avoid double or single quotes or brackets
                 const rawInput = match[1].trim();
-                const cleanedInput = rawInput
-                    .replace(/&quot;/g, '"') // Handle encoded quotes
-                    .replace(/\s+/g, ' ') // Clean up excess spaces
-                    .trim();
+                const cleanedInput = rawInput.replace(/s\s*=\s*&quot;|&quot;/g, ""); // Remove `s = &quot;` and ending `&quot;`
                 inputs.push(cleanedInput);
 
-                // Extract outputs (clean output)
                 const rawOutput = match[2].trim();
-                const cleanedOutput = rawOutput.replace(/\s+/g, ' ').trim(); // Clean up spaces in output
-                outputs.push(cleanedOutput); // Outputs are already clean
+                outputs.push(rawOutput); // Outputs are already clean
             }
 
             if (inputs.length === 0 || outputs.length === 0) {
@@ -65,22 +60,22 @@ export function activate(context: vscode.ExtensionContext) {
             const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || __dirname;
             const problemFolder = path.join(workspaceFolder, titleSlug);
 
-            // Create the problem folder if it doesn't exist
+            // Creating the problem folder if it doesn't exist which will contain the problem statement and test cases
             if (!fs.existsSync(problemFolder)) {
                 fs.mkdirSync(problemFolder, { recursive: true });
             }
 
-            // Save problem statement
+            // Saving problem statement
             const statementPath = path.join(problemFolder, "problem_statement.txt");
             fs.writeFileSync(statementPath, problemStatement);
 
-            // Create test_cases folder
+            // Creating test_cases folder
             const testCaseFolder = path.join(problemFolder, "test_cases");
             if (!fs.existsSync(testCaseFolder)) {
                 fs.mkdirSync(testCaseFolder, { recursive: true });
             }
 
-            // Save input and output files
+            // Saving input and output files
             inputs.forEach((input, index) => {
                 const inputPath = path.join(testCaseFolder, `input_${index + 1}.txt`);
                 const outputPath = path.join(testCaseFolder, `output_${index + 1}.txt`);
@@ -103,10 +98,10 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        // Get the user's solution from the active editor
+        // Getting the user's solution from the active editor
         const solutionCode = activeTextEditor.document.getText();
 
-        // Extract the titleSlug from the file path (assuming solution is saved in a subfolder corresponding to the problem titleSlug)
+        // Extracting the titleSlug from the file path
         const problemFolder = path.dirname(activeTextEditor.document.uri.fsPath);
         const testCaseFolder = path.join(problemFolder, 'test_cases');
 
@@ -115,7 +110,7 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        // Execute the solution with each input and check the output
+        // Executing the solution with each input and checking the output
         const inputs = fs.readdirSync(testCaseFolder).filter(file => file.startsWith('input_'));
         const results: { input: string; expected: string; actual: string; match: boolean }[] = [];
 
@@ -136,7 +131,7 @@ export function activate(context: vscode.ExtensionContext) {
             results.push(result);
         }
 
-        // Display results
+        // Displaying results
         displayResults(results);
     });
 
@@ -146,7 +141,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 async function executeSolution(solutionCode: string, inputFilePath: string): Promise<string> {
     return new Promise((resolve, reject) => {
-        // Determine language based on file extension (you may need to update for more languages)
+        // Determining language based on file extension 
         const fileExtension = solutionCode.includes("def") ? "py" : "cpp"; // Basic check for Python or C++
 
         const tempFilePath = path.join(__dirname, "temp_solution." + fileExtension);
@@ -168,7 +163,7 @@ async function executeSolution(solutionCode: string, inputFilePath: string): Pro
                 resolve(stdout.trim());
             }
 
-            // Clean up temporary files
+            // Cleaning up temporary files
             fs.unlinkSync(tempFilePath);
             if (fileExtension === "cpp") {
                 fs.unlinkSync(path.join(__dirname, "temp_executable"));
