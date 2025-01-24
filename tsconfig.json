@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+	  "module": "Node16",
+	  "target": "ES2022",
+	  "outDir": "out",
+	  "lib": [
+		"ES2022"
+	  ],
+	  "sourceMap": true,
+	  "rootDir": "src",
+	  "strict": true,  /* Enable all strict type-checking options */
+	  "skipLibCheck": true, /* Skip type checking for libraries */
+	  "typeRoots": [
+		"./node_modules/@types", /* Default location for type definitions */
+		"./types" /* Your custom types if you have any */
+	  ]
+	},
+	"exclude": [
+	  "node_modules" /* Exclude node_modules directory */
+	]
+  }
+  
